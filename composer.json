@@ -1,0 +1,22 @@
+{
+    "name": "vadymsemeniuk/yii2-image-require-validator-behavior",
+    "description": "Behavior for validating required image",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","image validator behavior", "behavior"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vadym Semeniuk",
+            "email": "vadimsemenykv@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "vadymsemenykv\\imageRequireValidator\\": "src"
+        }
+    }
+}
