@@ -19,13 +19,25 @@ class ImageRequireValidatorBehavior extends Behavior
     public $attribute = 'titleImage';
     public $translateMessageCategory = 'app';
     public $errorMessage = 'Image cannot be blank.';
-    
+
+    public $validateNum = false;
+
+    public $minNumOfImages = null;
+
     private function validateImage()
     {
         /* @var ActiveRecord $this->owner*/
-        $imageSavedBySign = EntityToFile::find()->where('temp_sign = :sign', [':sign' => $this->owner->sign])->one();
-        if (!$this->owner->{$this->imageRelation} && !$imageSavedBySign) {
+        $imageSavedBySign = EntityToFile::find()->where('temp_sign = :sign', [':sign' => $this->owner->sign])->all();
+        $imageRelation = $this->owner->{$this->imageRelation};
+        if (!$imageRelation && !$imageSavedBySign) {
             $this->owner->addError($this->attribute, Yii::t($this->translateMessageCategory, $this->errorMessage));
+        }
+        if (
+                $this->validateNum
+                &&
+                !((count($imageRelation) + count($imageSavedBySign)) >= $this->minNumOfImages)
+            ) {
+//            if ($this->multiple && $this->validateNum && ())
         }
     }
 
