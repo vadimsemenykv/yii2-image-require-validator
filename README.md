@@ -52,6 +52,9 @@ class Article extends ActiveRecord {
             'imageValidation' => [
                 'class' => ImageRequireValidatorBehavior::className(),
                 'translateMessageCategory' => 'back/article',
+                'imageRelation' => 'image',
+                'attribute' => 'titleImage',
+                'translateMessageCategory' => 'back/article',
                 'errorMessage' => 'Title image cannot be blank.',
             ],
         ];
