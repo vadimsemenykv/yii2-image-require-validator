@@ -19,6 +19,7 @@ class ImageRequireValidatorBehavior extends Behavior
     public $attribute = 'titleImage';
     public $translateMessageCategory = 'app';
     public $errorMessage = 'Image cannot be blank.';
+    public $errorNumMessage = 'Image cannot be blank.';
 
     public $validateNum = false;
 
@@ -36,8 +37,9 @@ class ImageRequireValidatorBehavior extends Behavior
                 $this->validateNum
                 &&
                 !((count($imageRelation) + count($imageSavedBySign)) >= $this->minNumOfImages)
-            ) {
-//            if ($this->multiple && $this->validateNum && ())
+            )
+        {
+            $this->owner->addError($this->attribute, Yii::t($this->translateMessageCategory, $this->errorNumMessage));
         }
     }
 
