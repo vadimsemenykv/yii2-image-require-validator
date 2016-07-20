@@ -34,10 +34,10 @@ class ImageRequireValidatorBehavior extends Behavior
             $this->owner->addError($this->attribute, Yii::t($this->translateMessageCategory, $this->errorMessage));
         }
         if (
-                $this->validateNum
-                &&
-                !((count($imageRelation) + count($imageSavedBySign)) >= $this->minNumOfImages)
-            )
+            $this->validateNum
+            &&
+            !((count($imageRelation) >= $this->minNumOfImages) || (count($imageSavedBySign) >= $this->minNumOfImages))
+        )
         {
             $this->owner->addError($this->attribute, Yii::t($this->translateMessageCategory, $this->errorNumMessage));
         }
