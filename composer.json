@@ -1,8 +1,8 @@
 {
-    "name": "vadymsemeniuk/yii2-image-require-validator-behavior",
+    "name": "vadymsemeniuk/yii2-image-require-validator",
     "description": "Behavior for validating required image",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","image validator behavior", "behavior"],
+    "keywords": ["yii2","extension","image require validator", "require", "image min count validator", "image max count validator"],
     "license": "MIT",
     "authors": [
         {

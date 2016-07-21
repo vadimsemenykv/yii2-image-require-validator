@@ -1,5 +1,5 @@
-Yii2 Image validator behavior Behavior
-======================================
+Yii2 Image require validator 
+============================
 Extension for validating image, throw EntityToFile model
 
 Installation
@@ -10,13 +10,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist vadymsemeniuk/yii2-image-require-validator-behavior "*"
+php composer.phar require --prefer-dist vadymsemeniuk/yii2-image-require-validator "*"
 ```
 
 or add
 
 ```
-"vadymsemeniuk/yii2-image-require-validator-behavior": "*"
+"vadymsemeniuk/yii2-image-require-validator": "*"
 ```
 
 to the require section of your `composer.json` file.
@@ -30,7 +30,7 @@ An example of usage could be:
 Your code must look like this
 
 ```php
-use vadymsemenykv\imageRequireValidator\ImageRequireValidatorBehavior
+use vadymsemenykv\imageRequireValidator\ImageRequireValidator
 
 /**
  * @property EntityToFile $image
@@ -46,19 +46,62 @@ class Article extends ActiveRecord {
             ->orderBy('t2.position DESC');
     }
     
-    public function behaviors()
+    /**
+     * @inheritdoc
+     */
+    public function rules()
     {
         return [
-            'imageValidation' => [
-                'class' => ImageRequireValidatorBehavior::className(),
-                'translateMessageCategory' => 'back/article',
-                'imageRelation' => 'image',
-                'attribute' => 'titleImage',
+            [['titleImage'],
+                ImageRequireValidator::className(),
                 'translateMessageCategory' => 'back/article',
                 'errorMessage' => 'Title image cannot be blank.',
+                'imageRelation' => 'image',
+                'skipOnEmpty' => false
             ],
         ];
-    }
+    }   
 }
 ```
 
+If you save in relation many images, and also want to validate min or|and max num of images your code must look like this:
+
+```php
+use vadymsemenykv\imageRequireValidator\ImageRequireValidator
+
+/**
+ * @property EntityToFile $images
+ */
+class Article extends ActiveRecord {
+    public $titleImages;
+    
+    public function getImages()
+    {
+        return $this->hasMany(EntityToFile::className(), ['entity_model_id' => 'id'])
+            ->andOnCondition(['t2.entity_model_name' => static::formName(), 't2.attribute' => EntityToFile::TYPE_ARTICLE_TITLE_IMAGE])
+            ->from(['t2' => EntityToFile::tableName()])
+            ->orderBy('t2.position DESC');
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['titleImages'],
+                ImageRequireValidator::className(),
+                'translateMessageCategory' => 'back/article',
+                'errorMessage' => 'Title images cannot be blank.',
+                'validateNum' => true,
+                'errorNumMinMessage' => 'Title images count should not be less than 3',
+                'errorNumMaxMessage' => 'Title images count should not be more than 6',
+                'minNumOfImages' => 3,
+                'maxNumOfImages' => 6,
+                'imageRelation' => 'images',
+                'skipOnEmpty' => false
+            ],
+        ];
+    }   
+}
+```
