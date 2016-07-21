@@ -8,53 +8,75 @@
 
 namespace vadymsemenykv\imageRequireValidator;
 
-use common\models\EntityToFile;
+use /** @noinspection PhpUndefinedNamespaceInspection */ common\models\EntityToFile;
 use Yii;
-use yii\base\Behavior;
-use yii\db\ActiveRecord;
+use yii\validators\Validator;
 
-class ImageRequireValidatorBehavior extends Behavior
+class ImageRequireValidator extends Validator
 {
     public $imageRelation = 'image';
-    public $attribute = 'titleImage';
-    public $translateMessageCategory = 'app';
     public $errorMessage = 'Image cannot be blank.';
-    public $errorNumMessage = 'Image cannot be blank.';
+    public $errorNumMinMessage = 'Image cannot be blank.';
+    public $errorNumMaxMessage = 'Image cannot be blank.';
 
     public $validateNum = false;
-
     public $minNumOfImages = null;
+    public $maxNumOfImages = null;
 
-    private function validateImage()
+    public function validateAttribute($model, $attribute)
     {
-        /* @var ActiveRecord $this->owner*/
-        $imageSavedBySign = EntityToFile::find()->where('temp_sign = :sign', [':sign' => $this->owner->sign])->all();
-        $imageRelation = $this->owner->{$this->imageRelation};
+        $imageSavedBySign = EntityToFile::find()->where('temp_sign = :sign', [':sign' => $model->sign])->all();
+        $imageRelation = $model->{$this->imageRelation};
         if (!$imageRelation && !$imageSavedBySign) {
-            $this->owner->addError($this->attribute, Yii::t($this->translateMessageCategory, $this->errorMessage));
+            $this->addError($model, $attribute, $this->errorMessage);
         }
-        if (
-            $this->validateNum
-            &&
-            !((count($imageRelation) >= $this->minNumOfImages) || (count($imageSavedBySign) >= $this->minNumOfImages))
-        )
-        {
-            $this->owner->addError($this->attribute, Yii::t($this->translateMessageCategory, $this->errorNumMessage));
+        if ($this->validateNum) {
+            $this->validateByNum($model, $attribute, $imageRelation, $imageSavedBySign);
+        }
+
+    }
+
+    /**
+     * @param $model
+     * @param $attribute
+     * @param $imageRelation
+     * @param $imageSavedBySign
+     * @return bool
+     */
+    private function validateByNum($model, $attribute, $imageRelation, $imageSavedBySign)
+    {
+        $result = false;
+        if ($this->minNumOfImages !== null && $this->validateForMinValue($imageRelation, $imageSavedBySign)) {
+            $this->addError($model, $attribute, $this->errorNumMinMessage);
+        }
+        if ($this->maxNumOfImages !== null && $this->validateForMaxValue($imageRelation, $imageSavedBySign)) {
+            $this->addError($model, $attribute, $this->errorNumMaxMessage);
         }
     }
 
     /**
-     * @inheritdoc
+     * @param $imageRelation
+     * @param $imageSavedBySign
+     * @return bool
      */
-    public function events()
+    private function validateForMinValue($imageRelation, $imageSavedBySign)
     {
-        return [
-            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
-        ];
+        return !((count($imageRelation) >= $this->minNumOfImages) || (count($imageSavedBySign) >= $this->minNumOfImages));
     }
 
-    public function beforeValidate()
+    /**
+     * @param $imageRelation
+     * @param $imageSavedBySign
+     * @return bool
+     */
+    private function validateForMaxValue($imageRelation, $imageSavedBySign)
     {
-        $this->validateImage();
+        return (
+            !(count($imageRelation) <= $this->maxNumOfImages) ||
+            !(count($imageSavedBySign) <= $this->maxNumOfImages) ||
+            !((count($imageRelation) + count($imageSavedBySign)) <= $this->maxNumOfImages)
+        );
     }
+
+
 }
