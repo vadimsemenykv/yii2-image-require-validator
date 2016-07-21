@@ -54,7 +54,6 @@ class Article extends ActiveRecord {
         return [
             [['titleImage'],
                 ImageRequireValidator::className(),
-                'translateMessageCategory' => 'back/article',
                 'errorMessage' => 'Title image cannot be blank.',
                 'imageRelation' => 'image',
                 'skipOnEmpty' => false
@@ -91,7 +90,6 @@ class Article extends ActiveRecord {
         return [
             [['titleImages'],
                 ImageRequireValidator::className(),
-                'translateMessageCategory' => 'back/article',
                 'errorMessage' => 'Title images cannot be blank.',
                 'validateNum' => true,
                 'errorNumMinMessage' => 'Title images count should not be less than 3',
