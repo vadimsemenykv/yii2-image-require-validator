@@ -8,7 +8,7 @@
 
 namespace vadymsemenykv\imageRequireValidator;
 
-use /** @noinspection PhpUndefinedNamespaceInspection */ common\models\EntityToFile;
+use common\models\EntityToFile;
 use Yii;
 use yii\validators\Validator;
 
