@@ -1,3 +1,7 @@
+[![Total Downloads](https://poser.pugx.org/vadymsemeniuk/yii2-image-require-validator/d/total.png)](https://packagist.org/packages/vadymsemeniuk/yii2-image-require-validator)
+[![Latest Stable Version](https://poser.pugx.org/vadymsemeniuk/yii2-image-require-validator/v/stable.png)](https://packagist.org/packages/vadymsemeniuk/yii2-image-require-validator)
+[![Dependency Status](https://www.versioneye.com/php/vadymsemeniuk:yii2-image-require-validator/dev-master/badge?style=flat)](https://www.versioneye.com/php/vadymsemeniuk:yii2-image-require-validator)
+
 Yii2 Image require validator 
 ============================
 Extension for validating image, throw EntityToFile model
